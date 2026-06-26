@@ -1,53 +1,23 @@
-bool DynamicProductContext::calcProductPass(const QVector<DynamicItemResult> &items) const
-{
-    qDebug() << "[DynamicPass] productCode =" << m_productCode
-             << "finished =" << m_finished
-             << "detectProgress =" << m_detectProgress;
+DynamicProtocol::ParsedFrame frame =
+        DynamicProtocol::parseFrame(canId, data, m_seed);
 
-    if (!m_finished) {
-        qDebug() << "[DynamicPass] Product NG because detect not finished.";
-        return false;
-    }
-
-    bool productPass = true;
-
-    for (const DynamicTestItemMeta &meta : m_itemMetas) {
-        if (!meta.affectsProductPass) {
-            continue;
-        }
-
-        bool found = false;
-
-        for (const DynamicItemResult &item : items) {
-            if (item.itemNo == meta.itemNo) {
-                found = true;
-
-                qDebug() << "[DynamicPass]"
-                         << "item =" << item.itemName
-                         << "pass =" << item.pass
-                         << "flagValue =" << item.flagValue
-                         << "flagReceived =" << item.flagReceived
-                         << "flagCheckOk =" << item.flagCheckOk
-                         << "valueReceived =" << item.valueReceived
-                         << "valueCheckOk =" << item.valueCheckOk
-                         << "message =" << item.message;
-
-                if (!item.pass) {
-                    productPass = false;
-                }
-
-                break;
-            }
-        }
-
-        if (!found) {
-            qDebug() << "[DynamicPass] item not found, itemNo =" << meta.itemNo
-                     << "itemName =" << meta.itemName;
-            productPass = false;
-        }
-    }
-
-    qDebug() << "[DynamicPass] final productPass =" << productPass;
-
-    return productPass;
+if (frame.valid && (frame.seq == 45 || frame.seq == 49)) {
+    qDebug().noquote()
+            << QString("[SEQ45_49_RAW] product=%1 channel=%2 canId=%3 raw=[%4] "
+                       "seq=%5 seed=%6 value=%7 groupCnt=%8 checkValue=%9 "
+                       "valid=%10 seedOk=%11 checkOk=%12 activeGroup=%13 detectProgress=%14")
+               .arg(m_productCode)
+               .arg(m_channelConfig.name)
+               .arg(DynamicProtocol::canIdToString(canId))
+               .arg(DynamicProtocol::frameDataToString(data))
+               .arg(frame.seq)
+               .arg(frame.seed)
+               .arg(frame.value)
+               .arg(frame.groupCnt)
+               .arg(frame.checkValue)
+               .arg(frame.valid ? "true" : "false")
+               .arg(frame.seedOk ? "true" : "false")
+               .arg(frame.checkOk ? "true" : "false")
+               .arg(m_activeGroupCnt)
+               .arg(m_detectProgress);
 }
