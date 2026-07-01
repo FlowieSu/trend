@@ -1,17 +1,12 @@
-const double summaryReverseResistance =
-        blackRedExecuted ? blackRedResult.resistanceKOhm
-                         : redBlackResult.resistanceKOhm;
+qDebug() << "====== Static INI Debug ======";
+qDebug() << "file =" << settings.fileName();
+qDebug() << "group =" << groupName;
+qDebug() << "childKeys =" << settings.childKeys();
 
-const double summaryReverseCapacitance =
-        blackRedExecuted ? blackRedResult.capacitanceNf
-                         : redBlackResult.capacitanceNf;
+const QString redRaw = settings.value("redBlackMPoints").toString();
+const QString blackRaw = settings.value("blackRedMPoints").toString();
 
-emit testCompleted(item.name,
-                   position,
-                   item.standard.text,
-                   redBlackResult.resistanceKOhm,
-                   summaryReverseResistance,
-                   redBlackResult.capacitanceNf,
-                   summaryReverseCapacitance,
-                   pass,
-                   message);
+qDebug() << "name raw =" << settings.value("name").toString();
+qDebug() << "redBlackMPoints raw =" << redRaw;
+qDebug() << "blackRedMPoints raw =" << blackRaw;
+qDebug() << "==============================";
