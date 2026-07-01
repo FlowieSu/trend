@@ -1,12 +1,20 @@
-qDebug() << "====== Static INI Debug ======";
-qDebug() << "file =" << settings.fileName();
-qDebug() << "group =" << groupName;
-qDebug() << "childKeys =" << settings.childKeys();
+static QString settingsValueToText(const QVariant &value)
+{
+    if (!value.isValid() || value.isNull()) {
+        return QString();
+    }
 
-const QString redRaw = settings.value("redBlackMPoints").toString();
-const QString blackRaw = settings.value("blackRedMPoints").toString();
+    QString text = value.toString().trimmed();
 
-qDebug() << "name raw =" << settings.value("name").toString();
-qDebug() << "redBlackMPoints raw =" << redRaw;
-qDebug() << "blackRedMPoints raw =" << blackRaw;
-qDebug() << "==============================";
+    if (!text.isEmpty()) {
+        return text;
+    }
+
+    const QStringList list = value.toStringList();
+
+    if (!list.isEmpty()) {
+        return list.join(",");
+    }
+
+    return QString();
+}
